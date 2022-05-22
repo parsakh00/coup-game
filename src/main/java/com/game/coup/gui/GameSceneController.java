@@ -3,6 +3,7 @@ package com.game.coup.gui;
 import com.game.coup.HelloApplication;
 import com.game.coup.game.Game;
 import com.game.coup.model.Action;
+import com.game.coup.model.Human;
 import com.game.coup.model.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -80,6 +81,7 @@ public class GameSceneController {
     Image Countess1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Contessa.png")));
     Game game;
     int cnt;
+    int position = 0;
     Player player1 = new Player("Parsa","user");
     Player player2 = new Player("Paranoid","FirstBot");
     Player player3 = new Player("CautiousKiller","SecondBot");
@@ -90,18 +92,25 @@ public class GameSceneController {
 //    desk = (ArrayList<String>) getDeskFile();
 
     public void initialize(){
+        //boolean gameFinished = false;
         game = new Game(player1, player2, player3, player4);
-        game.start();
 
-//        arrangeDesk();
-//        arrangeHands();
-//        putUsersCoin();
-//        putGameCoin();
+        arrangeDesk();
+        arrangeHands();
+        putUsersCoin();
+        putGameCoin();
 
         actionChoiceBox.setItems(ACTION);
         challengeChoiceBox.setItems(CHALLENGE);
 
+//        while (!gameFinished){
+//            game.player[game.turn].MakeAction(game);
+//            gameFinished = game.isGameFinished();
+//            game.turn = (game.turn + 1)%4;
+//        }
+
     }
+
     public Player getUserPlayer(){
         for (int i = 0; i < 4; i++){
             if (Objects.equals(game.player[i].getBotNumber(), "user")) return game.player[i];
@@ -112,9 +121,10 @@ public class GameSceneController {
         //ToDO
     }
     public void actionBtn(ActionEvent actionEvent){
-        if(actionChoiceBox.getSelectionModel().getSelectedItem() == Action.Income) getUserPlayer().addCoin(1);
-        //ToDo
+        ((Human) getUserPlayer()).setAction(actionChoiceBox.getSelectionModel().getSelectedItem());
+
     }
+
     public void nextRoundBtn(ActionEvent actionEvent){
         //ToDo
     }
@@ -164,104 +174,6 @@ public class GameSceneController {
             }
         }
     }
-    public void arrangeDesk(){
-        for (int i = 0; i < 5; i++) {
-            if(i == 0){
-                cnt = numberOfEachCardInDesk(game.desk, "Ambassador");
-                for (int j = 0; j < 3; j++) {
-                    if (cnt > 0) {
-                        Pane pane = new Pane();
-                        pane.setId(String.valueOf(10 * j + i));
-                        pane.getStyleClass().removeAll();
-                        pane.getChildren().add(getImageOfCard("Ambassador"));
-                        DeskCards.add(pane, i, j, 1, 1);
-                    }
-                    cnt -= 1;
-                }
-            }
-            else if(i == 1){
-                for (int j = 0; j < 3; j++) {
-                    if (cnt > 0) {
-                        Pane pane = new Pane();
-                        pane.setId(String.valueOf(10 * j + i));
-                        pane.getStyleClass().removeAll();
-                        pane.getChildren().add(getImageOfCard("Assassin"));
-                        DeskCards.add(pane, i, j, 1, 1);
-                    }
-                    cnt -= 1;
-                }
-            }
-            else if(i == 2){
-                for (int j = 0; j < 3; j++) {
-                    if (cnt > 0) {
-                        Pane pane = new Pane();
-                        pane.setId(String.valueOf(10 * j + i));
-                        pane.getStyleClass().removeAll();
-                        pane.getChildren().add(getImageOfCard("Countess"));
-                        DeskCards.add(pane, i, j, 1, 1);
-                    }
-                    cnt -= 1;
-                }
-            }
-            else if(i == 3){
-                for (int j = 0; j < 3; j++) {
-                    if (cnt > 0) {
-                        Pane pane = new Pane();
-                        pane.setId(String.valueOf(10 * j + i));
-                        pane.getStyleClass().removeAll();
-                        pane.getChildren().add(getImageOfCard("Captain"));
-                        DeskCards.add(pane, i, j, 1, 1);
-                    }
-                    cnt -= 1;
-                }
-            }
-            else {
-                for (int j = 0; j < 3; j++) {
-                    if (cnt > 0) {
-                        Pane pane = new Pane();
-                        pane.setId(String.valueOf(10 * j + i));
-                        pane.getStyleClass().removeAll();
-                        pane.getChildren().add(getImageOfCard("Duke"));
-                        DeskCards.add(pane, i, j, 1, 1);
-                    }
-                    cnt -= 1;
-                }
-            }
-
-        }
-    }
-    public ImageView getImageOfCard(String cardName){
-        if (Objects.equals(cardName, "Duke")){
-            ImageView imageView = new ImageView(Duke1);
-            imageView.setFitHeight(50);
-            imageView.setFitWidth(50);
-            return imageView;
-        }
-        else if (Objects.equals(cardName, "Assassin")){
-            ImageView imageView = new ImageView(Assassin1);
-            imageView.setFitHeight(50);
-            imageView.setFitWidth(50);
-            return imageView;
-        }
-        else if (Objects.equals(cardName, "Countess")){
-            ImageView imageView = new ImageView(Countess1);
-            imageView.setFitHeight(50);
-            imageView.setFitWidth(50);
-            return imageView;
-        }
-        else if (Objects.equals(cardName, "Captain")){
-            ImageView imageView = new ImageView(Captain1);
-            imageView.setFitHeight(50);
-            imageView.setFitWidth(50);
-            return imageView;
-        }
-        else {
-            ImageView imageView = new ImageView(Ambassador1);
-            imageView.setFitHeight(50);
-            imageView.setFitWidth(50);
-            return imageView;
-        }
-    }
     public int numberOfEachCardInDesk(ArrayList<String> desk, String cardName){
         eachCardNumber = 0;
         for (String element:desk){
@@ -269,16 +181,65 @@ public class GameSceneController {
         }
         return eachCardNumber;
     }
+    public void arrangeDesk(){
+        for (int i = 0; i < 6; i++) {
+                Pane pane = new Pane();
+                pane.setId(String.valueOf(i));
+                pane.getStyleClass().removeAll();
+                if (position < 6) {
+                    String cardName = game.desk.get(position);
+                    if (Objects.equals(cardName, "Ambassador")) pane.getChildren().add(getImageOfCard("Ambassador"));
+                    else if (Objects.equals(cardName, "Assassin")) pane.getChildren().add(getImageOfCard("Assassin"));
+                    else if (Objects.equals(cardName, "Countess")) pane.getChildren().add(getImageOfCard("Countess"));
+                    else if (Objects.equals(cardName, "Captain")) pane.getChildren().add(getImageOfCard("Captain"));
+                    else if (Objects.equals(cardName, "Duke")) pane.getChildren().add(getImageOfCard("Duke"));
+                    position += 1;
+                    DeskCards.add(pane, 0, i, 1, 1);
+                }
+
+        }
+    }
+    public ImageView getImageOfCard(String cardName){
+        if (Objects.equals(cardName, "Duke")){
+            ImageView imageView = new ImageView(Duke1);
+            imageView.setFitHeight(191);
+            imageView.setFitWidth(102);
+            return imageView;
+        }
+        else if (Objects.equals(cardName, "Assassin")){
+            ImageView imageView = new ImageView(Assassin1);
+            imageView.setFitHeight(191);
+            imageView.setFitWidth(102);
+            return imageView;
+        }
+        else if (Objects.equals(cardName, "Countess")){
+            ImageView imageView = new ImageView(Countess1);
+            imageView.setFitHeight(191);
+            imageView.setFitWidth(102);
+            return imageView;
+        }
+        else if (Objects.equals(cardName, "Captain")){
+            ImageView imageView = new ImageView(Captain1);
+            imageView.setFitHeight(191);
+            imageView.setFitWidth(102);
+            return imageView;
+        }
+        else {
+            ImageView imageView = new ImageView(Ambassador1);
+            imageView.setFitHeight(191);
+            imageView.setFitWidth(102);
+            return imageView;
+        }
+    }
     public int getUserCoinFromFile(Player player){
+
         try {
 
             //Read JSON file
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\example\\coup\\database\\" + player.getName() + ".json"));
+            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + player.getName() + ".json"));
             JSONObject deskCards = (JSONObject) obj;
-
-
-            return (int) deskCards.get("Coin");
+            return ((Long) deskCards.get("Coin")).intValue();
 
         } catch (ParseException | IOException e) {
             e.printStackTrace();
@@ -290,7 +251,7 @@ public class GameSceneController {
 
             //Read JSON file
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\example\\coup\\database\\" + player.getName() + ".json"));
+            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + player.getName() + ".json"));
             JSONObject deskCards = (JSONObject) obj;
 
 
@@ -306,7 +267,7 @@ public class GameSceneController {
 
             //Read JSON file
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\example\\coup\\database\\" + player.getName() + ".json"));
+            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + player.getName() + ".json"));
             JSONObject deskCards = (JSONObject) obj;
 
 

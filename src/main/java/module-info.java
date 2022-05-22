@@ -13,6 +13,7 @@ module com.game.coup {
     exports com.game.coup;
     exports com.game.coup.gui;
     exports com.game.coup.model;
+    exports com.game.coup.game;
 
     opens com.game.coup.gui to javafx.fxml;
 }

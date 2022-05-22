@@ -1,5 +1,7 @@
 package com.game.coup.model;
 
+
+
 import com.game.coup.game.Game;
 import org.json.simple.JSONObject;
 
@@ -192,11 +194,7 @@ public class Player {
         return null;
     }
 
-    public Player choosePlayer(Game game){
-        //TODO override
-        // It should choose a player from the game.
-        return null;
-    }
+    public Player choosePlayer(Game game){return null;}
 
     public void removeFromHand(String card){
         hand.remove(card);
@@ -204,11 +202,7 @@ public class Player {
     public void addToLostCards(String card){
         lostCards.add(card);
     }
-    public String chooseCard(){
-        //ToDo override
-        // choose a card to give away
-        return null;
-    }
+    public String chooseCard(){return null;}
 
 
     public void playerCoinUpdate(Player player, int i){
@@ -227,30 +221,11 @@ public class Player {
         }
     }
 
-    public Action ChooseAction(){
-        // TODO override
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Which action do you want to do:1)Income 2)ForeignAid 3)Coup 4)Taxes 5)Assassinate 6)Steal 7)SwapInfluence");
-        int actionNumber = scanner.nextInt();
-        if (actionNumber == 1) return Action.Income;
-        else if (actionNumber == 2) return Action.ForeignAid;
-        else if (actionNumber == 3) return Action.Coup;
-        else if (actionNumber == 4) return Action.Taxes;
-        else if (actionNumber == 5) return Action.Assassinate;
-        else if (actionNumber == 6) return Action.Steal;
-        else return Action.SwapInfluence;
-    }
+    public Action ChooseAction(){return null;}
 
-    public boolean sendChallenge(Challenge challenge){
-        challenge.setChallenger(this);
-        return true;
-    }
+    public boolean sendChallenge(Challenge challenge){return true;}
 
-    public boolean sendMutualChallenge(MutualChallenge mutualChallenge)
-    {
-        mutualChallenge.setChallenger(this);
-        return true;
-    }
+    public boolean sendMutualChallenge(MutualChallenge mutualChallenge) {return true;}
 
 
 }

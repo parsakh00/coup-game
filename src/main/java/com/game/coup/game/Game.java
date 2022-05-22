@@ -33,8 +33,8 @@ public class Game {
         player[2] = player3;
         player[3] = player4;
         coin = 50;
-        desk = new ArrayList<>();
-        //desk = (ArrayList<String>) getDeskFile();
+        //desk = new ArrayList<>();
+        desk = (ArrayList<String>) getDeskFile();
         for (int i = 0 ; i < 3; i++){
             Card card1 = Card.Ambassador;
             Card card2 = Card.Assassin;
@@ -95,6 +95,8 @@ public class Game {
         jsonObject.put("Coin", player.getCoin());
         jsonObject.put("isHuman", player.isHuman());
         jsonObject.put("Name", player.getName());
+        jsonObject.put("BotNumber", player.getBotNumber());
+
         try {
             FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + player.getName() + ".json");
             file.write(jsonObject.toJSONString());
@@ -125,7 +127,7 @@ public class Game {
 
             //Read JSON file
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\example\\coup\\database\\" + "cards" + ".json"));
+            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + "cards" + ".json"));
             JSONObject deskCards = (JSONObject) obj;
 
 
