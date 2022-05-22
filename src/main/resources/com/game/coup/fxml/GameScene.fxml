@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.game.coup.gui.GameSceneController">
+    <children>
+        <ListView fx:id="actionsListView" layoutX="27.0" layoutY="75.0" prefHeight="270.0" prefWidth="398.0" />
+        <Label layoutX="27.0" layoutY="57.0" text="Actions:" />
+        <Label layoutX="442.0" layoutY="14.0" text="Desk : " />
+        <ImageView fitHeight="169.0" fitWidth="287.0" layoutX="979.0" layoutY="75.0">
+            <image>
+                <Image url="@../images/GuideCard.jpg" />
+            </image>
+        </ImageView>
+        <Label layoutX="976.0" layoutY="48.0" text="Guide Card : " />
+        <Label layoutX="55.0" layoutY="345.0" text="You:" />
+        <ImageView fx:id="userCoin" layoutX="55.0" layoutY="613.0">
+            <image>
+                <Image url="@../images/Coin.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="480.0" layoutY="345.0" text="First bot:" />
+        <ImageView fx:id="firstBotCoin" layoutX="480.0" layoutY="613.0">
+            <image>
+                <Image url="@../images/Coin.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="715.0" layoutY="345.0" text="Second bot:" />
+        <ImageView fx:id="secondBotCoin" layoutX="715.0" layoutY="613.0">
+            <image>
+                <Image url="@../images/Coin.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="970.0" layoutY="345.0" text="Third Bot:" />
+        <ImageView fx:id="thirdBotCoin" layoutX="970.0" layoutY="613.0">
+            <image>
+                <Image url="@../images/Coin.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="291.0" layoutY="378.0" text="Choose action:" />
+        <ChoiceBox fx:id="actionChoiceBox" layoutX="291.0" layoutY="404.0" prefWidth="150.0" />
+        <!--      <Button fx:id="performActionButton" layoutX="301.0" layoutY="502.0" mnemonicParsing="false" onAction="#performAction" text="Perform" />-->
+        <!--      <Button fx:id="challengeAttackerButton" layoutX="319.0" layoutY="588.0" mnemonicParsing="false" onAction="#challengeAttacker" text="Challenge attacker" />-->
+        <!--      <Button fx:id="confrontButton" layoutX="287.0" layoutY="552.0" mnemonicParsing="false" onAction="#confront" text="Confront" />-->
+        <Label layoutX="291.0" layoutY="439.0" text="Challenge to :" />
+        <ChoiceBox fx:id="challengeChoiceBox" layoutX="291.0" layoutY="465.0" prefWidth="150.0" />
+        <!--      <Button fx:id="challengeDefenderButton" layoutX="316.0" layoutY="625.0" mnemonicParsing="false" onAction="#challengeDefender" text="Challenge defender" />-->
+        <!--      <Button fx:id="doNothingButton" layoutX="360.0" layoutY="552.0" mnemonicParsing="false" onAction="#doNothing" text="Don't Confront" />-->
+        <!--      <Button fx:id="nextRoundButton" layoutX="338.0" layoutY="663.0" mnemonicParsing="false" onAction="#performRound" text="Next round" />-->
+        <GridPane fx:id="DeskCards" layoutX="442.0" layoutY="57.0" prefHeight="287.0" prefWidth="500.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="114.0" minHeight="10.0" prefHeight="84.4" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="157.80001525878907" minHeight="0.0" prefHeight="110.39999999999999" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="177.4" minHeight="10.0" prefHeight="92.40000000000003" vgrow="SOMETIMES" />
+            </rowConstraints>
+        </GridPane>
+        <GridPane fx:id="HumanCard" layoutX="48.0" layoutY="396.0" prefHeight="189.0" prefWidth="200.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+        </GridPane>
+        <GridPane fx:id="FirstBotGrid" layoutX="469.0" layoutY="396.0" prefHeight="189.0" prefWidth="200.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+        </GridPane>
+        <GridPane fx:id="SecondBotGrid" layoutX="709.0" layoutY="396.0" prefHeight="189.0" prefWidth="200.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+        </GridPane>
+        <GridPane fx:id="ThirdBotGrid" layoutX="960.0" layoutY="396.0" prefHeight="189.0" prefWidth="200.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+        </GridPane>
+        <Label layoutX="113.0" layoutY="613.0" prefHeight="18.0" prefWidth="120.0" text="Number of Coins : " />
+        <Label fx:id="userCoins" layoutX="113.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
+        <Label layoutX="771.0" layoutY="613.0" prefHeight="18.0" prefWidth="120.0" text="Number of Coins : " />
+        <Label layoutX="1028.0" layoutY="613.0" prefHeight="18.0" prefWidth="120.0" text="Number of Coins : " />
+        <Label layoutX="539.0" layoutY="613.0" prefHeight="18.0" prefWidth="120.0" text="Number of Coins : " />
+        <Label fx:id="firstBotCoins" layoutX="539.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
+        <Label fx:id="thirdBotCoins" layoutX="1028.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
+        <Label fx:id="secondBotCoins" layoutX="771.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
+        <Label layoutX="27.0" layoutY="14.0" prefHeight="18.0" prefWidth="69.0" text="Game Coin : " />
+        <Label fx:id="gameCoin" layoutX="97.0" layoutY="9.0" prefHeight="26.0" prefWidth="63.0" />
+        <Button fx:id="nextRound" layoutX="327.0" layoutY="609.0" mnemonicParsing="false" onAction="#nextRoundBtn" prefHeight="25.0" prefWidth="78.0" text="Next round" />
+        <Button fx:id="okAction" layoutX="326.0" layoutY="522.0" mnemonicParsing="false" onAction="#actionBtn" prefHeight="25.0" prefWidth="78.0" text="OK Action" />
+        <Button fx:id="okChallenge" layoutX="312.0" layoutY="566.0" mnemonicParsing="false" onAction="#challengeBtn" prefHeight="26.0" prefWidth="107.0" text="OK Challenge" />
+    </children>
+</AnchorPane>
