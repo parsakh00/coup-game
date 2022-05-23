@@ -30,7 +30,7 @@ public class HelloApplication extends Application {
             }
         });
 
-        stage.setMaximized(true);
+        //stage.setMaximized(true);
         stage.getIcons().add(icon);
         stage.setTitle("Coup Game");
         stage.setHeight(720);

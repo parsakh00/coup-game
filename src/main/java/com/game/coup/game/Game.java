@@ -60,6 +60,7 @@ public class Game {
         for (int i = 0; i < 4; i++){
             player[i].addCoin(2);
             this.coin -= 2;
+            player[i].isHuman = i == 0;
             MakeUserFile(player[i].getCardFromHand(), player[i]);
         }
 
@@ -69,9 +70,6 @@ public class Game {
             else if (Objects.equals(player[i].getBotNumber(), "ThirdBot")) thirdBot = player[i];
             else if (Objects.equals(player[i].getBotNumber(), "user")) user = player[i];
         }
-
-
-
 
     }
 
@@ -93,10 +91,15 @@ public class Game {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("Cards", hand);
         jsonObject.put("Coin", player.getCoin());
-        jsonObject.put("isHuman", player.isHuman());
         jsonObject.put("Name", player.getName());
         jsonObject.put("BotNumber", player.getBotNumber());
-
+        if (!Objects.equals(player.getName(), "Paranoid") && !Objects.equals(player.getName(), "Greedy")
+                && !Objects.equals(player.getName(), "CoupDetat") && !Objects.equals(player.getName(), "CautiousKiller")){
+            jsonObject.put("isHuman", true);
+        }
+        else{
+            jsonObject.put("isHuman", false);
+        }
         try {
             FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + player.getName() + ".json");
             file.write(jsonObject.toJSONString());

@@ -2,9 +2,7 @@ package com.game.coup.gui;
 
 import com.game.coup.HelloApplication;
 import com.game.coup.game.Game;
-import com.game.coup.model.Action;
-import com.game.coup.model.Human;
-import com.game.coup.model.Player;
+import com.game.coup.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -67,6 +65,8 @@ public class GameSceneController {
     public Button okAction;
     @FXML
     public Button okChallenge;
+    @FXML
+    public Label roundNo;
     private final Action[] ACTION_LIST = {Action.Income,Action.ForeignAid,Action.Coup
             ,Action.Taxes,Action.Assassinate,Action.Steal,Action.SwapInfluence};
     private final ObservableList<Action> ACTION = FXCollections.observableArrayList(ACTION_LIST);
@@ -80,53 +80,151 @@ public class GameSceneController {
     Image Duke1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Duke.png")));
     Image Countess1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Contessa.png")));
     Game game;
-    int cnt;
+    int round = 1;
+    Action currentAction;
     int position = 0;
     Player player1 = new Player("Parsa","user");
     Player player2 = new Player("Paranoid","FirstBot");
     Player player3 = new Player("CautiousKiller","SecondBot");
     Player player4 = new Player("Greedy","ThirdBot");
 
+    ArrayList<String> progress = new ArrayList<>();
 //    ArrayList<String> userCards;
 //    userCards = new ArrayList<>();
 //    desk = (ArrayList<String>) getDeskFile();
 
+
     public void initialize(){
-        //boolean gameFinished = false;
         game = new Game(player1, player2, player3, player4);
+//
+//        progression("1");
+//        progression("2");
 
         arrangeDesk();
         arrangeHands();
         putUsersCoin();
         putGameCoin();
+        roundNo.setText(String.valueOf(round));
 
         actionChoiceBox.setItems(ACTION);
         challengeChoiceBox.setItems(CHALLENGE);
 
-//        while (!gameFinished){
-//            game.player[game.turn].MakeAction(game);
-//            gameFinished = game.isGameFinished();
-//            game.turn = (game.turn + 1)%4;
-//        }
+        nextTurn();
 
     }
 
-    public Player getUserPlayer(){
+    public void progression(String action){
+        progress.add(action);
+        actionsListView.getItems().clear();
+        for (String element:progress){
+            actionsListView.getItems().add(element);
+        }
+    }
+
+    public Human getUserPlayer(){
         for (int i = 0; i < 4; i++){
-            if (Objects.equals(game.player[i].getBotNumber(), "user")) return game.player[i];
+            if (game.player[i] instanceof Human) return (Human) game.player[i];
         }
         return null;
     }
     public void challengeBtn(ActionEvent actionEvent){
-        //ToDO
+        String currentChallenge = challengeChoiceBox.getSelectionModel().getSelectedItem();
+        getUserPlayer().setChallenge(currentChallenge);
+        Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
+        game.setChallenges(challenge);
+        ChallengeStatus challengeStatus = challenge.ActionEvent();
+
+        // if challenge fails then the player's turn is over
+        if (challengeStatus == ChallengeStatus.ChallengeLost){
+            // if number of cards is zero, then give all the coins to treasury
+            if (game.player[game.turn].getNumberOfCards() == 0)
+            {
+                game.addCoins(game.player[game.turn].coin);
+                game.player[game.turn].coin = 0;
+            }
+            return;
+        }
+        TakeAction();
     }
     public void actionBtn(ActionEvent actionEvent){
-        ((Human) getUserPlayer()).setAction(actionChoiceBox.getSelectionModel().getSelectedItem());
-
+        currentAction = actionChoiceBox.getSelectionModel().getSelectedItem();
+        if (currentAction != null) Challenges();
     }
 
     public void nextRoundBtn(ActionEvent actionEvent){
-        //ToDo
+        game.turn = (game.turn + 1) % 4;
+        nextTurn();
+        round += 1;
+        roundNo.setText(String.valueOf(round));
+    }
+    public void nextTurn(){
+        if (!game.isGameFinished()){
+            //game.player[game.turn].MakeAction(game);
+            if (game.player[game.turn].isHuman){
+                return;
+            }
+            else{
+                currentAction = game.player[game.turn].ChooseAction();
+                Challenges();
+            }
+        }
+    }
+    public void Challenges(){
+        if (game.player[game.turn].isHuman){
+            Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
+            game.setChallenges(challenge);
+            ChallengeStatus challengeStatus = challenge.ActionEvent();
+
+            // if challenge fails then the player's turn is over
+            if (challengeStatus == ChallengeStatus.ChallengeLost){
+                // if number of cards is zero, then give all the coins to treasury
+                if (game.player[game.turn].getNumberOfCards() == 0)
+                {
+                    game.addCoins(game.player[game.turn].coin);
+                    game.player[game.turn].coin = 0;
+                }
+                return;
+            }
+            TakeAction();
+
+        }
+        else{
+            return;
+        }
+    }
+    public void TakeAction(){
+        game.player[game.turn].takeMoneyForAction(currentAction,game);
+        if (Objects.equals(game.player[game.turn].getBotNumber(), "FirstBot")){
+            firstBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+            gameCoin.setText(String.valueOf(game.coin));
+        }
+        else if (Objects.equals(game.player[game.turn].getBotNumber(), "SecondBot")){
+            secondBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+            gameCoin.setText(String.valueOf(game.coin));
+        }
+        else if (Objects.equals(game.player[game.turn].getBotNumber(), "ThirdBot")){
+            thirdBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+            gameCoin.setText(String.valueOf(game.coin));
+        }
+        else {
+            userCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+            gameCoin.setText(String.valueOf(game.coin));
+        }
+    }
+    public void MutualChallenge(){
+        game.player[game.turn].doAction(currentAction, game, null);
+        if (Objects.equals(game.player[game.turn].getBotNumber(), "FirstBot")){
+            firstBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+        }
+        else if (Objects.equals(game.player[game.turn].getBotNumber(), "SecondBot")){
+            secondBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+        }
+        else if (Objects.equals(game.player[game.turn].getBotNumber(), "ThirdBot")){
+            thirdBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+        }
+        else {
+            userCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+        }
     }
     public void putUsersCoin(){
         for (int i = 0; i < 4; i++){

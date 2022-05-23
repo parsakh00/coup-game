@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Human extends Player{
     Action action;
 
+    String challenge;
 
     public Human(String name) {
         super(name,"");
@@ -18,16 +19,18 @@ public class Human extends Player{
         this.action = action;
     }
 
+    public void setChallenge(String challenge) {
+        this.challenge = challenge;
+    }
 
     public boolean sendChallenge(Challenge challenge){
-        System.out.println("Do you wanna Challenge?Y/N");
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.next();
-        if (Objects.equals(input, "Y")) {
+        if (Objects.equals(this.challenge, "No Challenge")) {
+            return false;
+        }
+        else {
             challenge.setChallenger(this);
             return true;
         }
-        else return false;
     }
 
     public boolean sendMutualChallenge(MutualChallenge mutualChallenge) {

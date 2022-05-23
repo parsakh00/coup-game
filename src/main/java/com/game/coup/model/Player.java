@@ -15,7 +15,7 @@ public class Player {
     protected ArrayList<String> hand;
     protected ArrayList<String> lostCards;
     protected String name;
-    protected int coin;
+    public int coin;
 
     protected String botNumber; //if isHuman == true put "user"
 
@@ -100,6 +100,7 @@ public class Player {
             return;
         }
 
+
         // take money for the action
         this.takeMoneyForAction(currentAction,game);
 
@@ -124,7 +125,7 @@ public class Player {
         this.doAction(currentAction,game,adversary);
     }
 
-    private void doAction(Action currentAction, Game game, Player adversary) {
+    public void doAction(Action currentAction, Game game, Player adversary) {
         if (currentAction == Action.Assassinate){
             String card = adversary.chooseCard();
             adversary.removeFromHand(card);
@@ -213,7 +214,7 @@ public class Player {
         jsonObject.put("Type", player.isHuman());
         jsonObject.put("BotNumber", player.getBotNumber());
         try {
-            FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\java\\example\\coup\\database\\" + player.getName() + ".json");
+            FileWriter file = new FileWriter(System.getProperty("user.dir") + "\\src\\main\\java\\com\\game\\coup\\database\\" + player.getName() + ".json");
             file.write(jsonObject.toJSONString());
             file.close();
         } catch (IOException e) {

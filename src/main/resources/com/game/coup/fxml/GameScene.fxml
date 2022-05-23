@@ -16,11 +16,6 @@
             <font>
                 <Font name="Cambria Bold Italic" size="13.0" />
             </font></Label>
-        <ImageView fitHeight="169.0" fitWidth="287.0" layoutX="970.0" layoutY="75.0">
-            <image>
-                <Image url="@../images/GuideCard.jpg" />
-            </image>
-        </ImageView>
         <Label layoutX="976.0" layoutY="48.0" text="Guide Card : ">
             <font>
                 <Font name="Cambria Bold Italic" size="13.0" />
@@ -130,7 +125,10 @@
             <font>
                 <Font name="Cambria Bold Italic" size="13.0" />
             </font></Label>
-        <Label fx:id="userCoins" layoutX="113.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
+        <Label fx:id="userCoins" layoutX="113.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font></Label>
         <Label layoutX="771.0" layoutY="613.0" prefHeight="18.0" prefWidth="120.0" text="Number of Coins : ">
             <font>
                 <Font name="Cambria Bold Italic" size="13.0" />
@@ -143,16 +141,44 @@
             <font>
                 <Font name="Cambria Bold Italic" size="13.0" />
             </font></Label>
-        <Label fx:id="firstBotCoins" layoutX="539.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
-        <Label fx:id="thirdBotCoins" layoutX="1028.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
-        <Label fx:id="secondBotCoins" layoutX="771.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0" />
+        <Label fx:id="firstBotCoins" layoutX="539.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font></Label>
+        <Label fx:id="thirdBotCoins" layoutX="1028.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font></Label>
+        <Label fx:id="secondBotCoins" layoutX="771.0" layoutY="638.0" prefHeight="26.0" prefWidth="98.0">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font></Label>
         <Label layoutX="27.0" layoutY="14.0" prefHeight="18.0" prefWidth="69.0" text="Game Coin : ">
             <font>
                 <Font name="Cambria Bold Italic" size="12.0" />
             </font></Label>
-        <Label fx:id="gameCoin" layoutX="97.0" layoutY="9.0" prefHeight="26.0" prefWidth="63.0" />
+        <Label fx:id="gameCoin" layoutX="97.0" layoutY="9.0" prefHeight="26.0" prefWidth="63.0">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font></Label>
         <Button fx:id="nextRound" layoutX="327.0" layoutY="609.0" mnemonicParsing="false" onAction="#nextRoundBtn" prefHeight="25.0" prefWidth="78.0" styleClass="bevel-grey" stylesheets="@../styles.css" text="Next round" />
         <Button fx:id="okAction" layoutX="326.0" layoutY="522.0" mnemonicParsing="false" onAction="#actionBtn" prefHeight="25.0" prefWidth="78.0" styleClass="bevel-grey" stylesheets="@../styles.css" text="OK Action" />
         <Button fx:id="okChallenge" layoutX="312.0" layoutY="566.0" mnemonicParsing="false" onAction="#challengeBtn" prefHeight="26.0" prefWidth="107.0" styleClass="bevel-grey" stylesheets="@../styles.css" text="OK Challenge" />
+      <ImageView fitHeight="200.0" fitWidth="262.0" layoutX="976.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Guide%20card.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="98.0" fitWidth="128.0" layoutX="631.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="27.0" layoutY="32.0" prefHeight="18.0" prefWidth="50.0" text="Round : ">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="roundNo" layoutX="77.0" layoutY="33.0" prefHeight="18.0" prefWidth="59.0">
+         <font>
+            <Font name="Cambria Bold Italic" size="12.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
