@@ -68,7 +68,7 @@ public class GameSceneController {
     @FXML
     public Label roundNo;
     private final Action[] ACTION_LIST = {Action.Income,Action.ForeignAid,Action.Coup
-            ,Action.Taxes,Action.Assassinate,Action.Steal,Action.SwapInfluence};
+            ,Action.Taxes,Action.Assassinate,Action.Steal,Action.SwapInfluence,Action.ChanceToChange};
     private final ObservableList<Action> ACTION = FXCollections.observableArrayList(ACTION_LIST);
 
     private final String[] CHALLENGE_LIST = {"No Challenge","FirstBot","SecondBot","ThirdBot"};
@@ -82,11 +82,12 @@ public class GameSceneController {
     Game game;
     int round = 1;
     Action currentAction;
+    Player adversary;
     int position = 0;
     Player player1 = new Player("Parsa","user");
-    Player player2 = new Player("Paranoid","FirstBot");
-    Player player3 = new Player("CautiousKiller","SecondBot");
-    Player player4 = new Player("Greedy","ThirdBot");
+    Player player2 = new Paranoid("Paranoid","FirstBot");
+    Player player3 = new CautiousKiller("CautiousKiller","SecondBot");
+    Player player4 = new Greedy("Greedy","ThirdBot");
 
     ArrayList<String> progress = new ArrayList<>();
 //    ArrayList<String> userCards;
@@ -94,12 +95,12 @@ public class GameSceneController {
 //    desk = (ArrayList<String>) getDeskFile();
 
 
-    public void initialize(){
+    public void initialize() throws InterruptedException {
         game = new Game(player1, player2, player3, player4);
+
 //
 //        progression("1");
 //        progression("2");
-
         arrangeDesk();
         arrangeHands();
         putUsersCoin();
@@ -151,21 +152,24 @@ public class GameSceneController {
         if (currentAction != null) Challenges();
     }
 
-    public void nextRoundBtn(ActionEvent actionEvent){
+    public void nextRoundBtn(ActionEvent actionEvent) throws InterruptedException {
         game.turn = (game.turn + 1) % 4;
         nextTurn();
         round += 1;
-        roundNo.setText(String.valueOf(round));
+        roundNo.setText(String.valueOf(round - 3));
     }
-    public void nextTurn(){
+    public void nextTurn() throws InterruptedException {
         if (!game.isGameFinished()){
             //game.player[game.turn].MakeAction(game);
             if (game.player[game.turn].isHuman){
                 return;
             }
             else{
-                currentAction = game.player[game.turn].ChooseAction();
+                currentAction = (game.player[game.turn]).ChooseAction();
                 Challenges();
+                game.turn = (game.turn + 1) % 4;
+                nextTurn();
+                round += 1;
             }
         }
     }
@@ -189,7 +193,22 @@ public class GameSceneController {
 
         }
         else{
-            return;
+            Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
+            game.setChallenges(challenge);
+            ChallengeStatus challengeStatus = challenge.ActionEvent();
+
+            // if challenge fails then the player's turn is over
+            if (challengeStatus == ChallengeStatus.ChallengeLost){
+                // if number of cards is zero, then give all the coins to treasury
+                if (game.player[game.turn].getNumberOfCards() == 0)
+                {
+                    game.addCoins(game.player[game.turn].coin);
+                    game.player[game.turn].coin = 0;
+                }
+                return;
+            }
+            TakeAction();
+            //return;
         }
     }
     public void TakeAction(){
@@ -212,18 +231,25 @@ public class GameSceneController {
         }
     }
     public void MutualChallenge(){
-        game.player[game.turn].doAction(currentAction, game, null);
-        if (Objects.equals(game.player[game.turn].getBotNumber(), "FirstBot")){
-            firstBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+        if (game.player[game.turn].isHuman){
+            MutualChallenge mutualChallenge = new MutualChallenge(game.player[game.turn],currentAction,adversary);
+            game.setMutualChallenges(mutualChallenge);
+
+            if (mutualChallenge.isMutuallyChallenged()) {
+                // get challenges to the mutual action
+                Challenge challengeMutual = new Challenge(mutualChallenge.mutualAction ,mutualChallenge.action, mutualChallenge.challenger, game);
+                game.setChallenges(challengeMutual);
+                ChallengeStatus challengeMutualStatus = challengeMutual.ActionEvent();
+                // if the mutual challenge wins or is not challenged, then player loses
+                if (challengeMutualStatus != ChallengeStatus.ChallengeLost)
+                {
+                    return;
+                }
+            }
+            TakeAction();
         }
-        else if (Objects.equals(game.player[game.turn].getBotNumber(), "SecondBot")){
-            secondBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
-        }
-        else if (Objects.equals(game.player[game.turn].getBotNumber(), "ThirdBot")){
-            thirdBotCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
-        }
-        else {
-            userCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
+        else{
+            return;
         }
     }
     public void putUsersCoin(){

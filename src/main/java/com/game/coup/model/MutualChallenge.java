@@ -1,11 +1,11 @@
 package com.game.coup.model;
 
 public class MutualChallenge {
-    Player challenged;
-    Player adversary;
-    Player challenger;
-    Action action;
-    MutualAction mutualAction;
+    public Player challenged;
+    public Player adversary;
+    public Player challenger;
+    public Action action;
+    public MutualAction mutualAction;
     public MutualChallenge(Player challenged, Action action, Player adversary)
     {
         this.challenged = challenged;

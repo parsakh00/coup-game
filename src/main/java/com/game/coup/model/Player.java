@@ -28,9 +28,9 @@ public class Player {
         hand = new ArrayList<>();
         lostCards = new ArrayList<>();
         this.botNumber = botNumber;
-
         coin = 0;
     }
+
 
     public String getBotNumber() {
         return botNumber;
@@ -160,6 +160,11 @@ public class Player {
             game.addCoins(-1);
             playerCoinUpdate(this, 1);
             this.coin += 1;
+        }
+        else if (currentAction == Action.ChanceToChange){
+            game.addCoins(1);
+            playerCoinUpdate(this, -1);
+            this.coin -= 1;
         }
         else if (currentAction == Action.Taxes){
             game.addCoins(-3);

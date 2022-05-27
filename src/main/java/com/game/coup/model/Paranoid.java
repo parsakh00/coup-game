@@ -3,8 +3,8 @@ package com.game.coup.model;
 public class Paranoid extends Bot{
     boolean paranoid;
 
-    public Paranoid(String name) {
-        super(name);
+    public Paranoid(String name, String botNumber) {
+        super(name, botNumber);
     }
     public boolean sendChallenge(Challenge challenge) {
         if (paranoid) {
@@ -15,13 +15,15 @@ public class Paranoid extends Bot{
         paranoid = true;
         return false;
     }
-
+    @Override
     public boolean sendMutualChallenge(MutualChallenge mutualChallenge)
     {
         return false;
     }
+    @Override
     public Action ChooseAction(){
-        return Action.Income;
+        if (this.coin <= 10) return Action.Income;
+        else return Action.Coup;
     }
 
 }

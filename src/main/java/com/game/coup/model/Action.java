@@ -7,5 +7,6 @@ public enum Action {
     Taxes,
     Assassinate,
     Steal,
-    SwapInfluence
+    SwapInfluence,
+    ChanceToChange
 }

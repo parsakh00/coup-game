@@ -49,6 +49,9 @@ public class Challenge {
         else if (action == Action.Income){
             return ChallengeStatus.NoChallenge;
         }
+        else if (action == Action.ChanceToChange){
+            return ChallengeStatus.NoChallenge;
+        }
         else if (action == Action.Steal){
             return getCardName("Captain");
         }

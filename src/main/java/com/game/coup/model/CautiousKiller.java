@@ -6,8 +6,8 @@ public class CautiousKiller extends Bot{
 
     boolean paranoid;
 
-    public CautiousKiller(String name) {
-        super(name);
+    public CautiousKiller(String name, String botNumber) {
+        super(name, botNumber);
     }
     public boolean sendChallenge(Challenge challenge) {
         if (paranoid) {
@@ -18,26 +18,22 @@ public class CautiousKiller extends Bot{
         paranoid = true;
         return false;
     }
-
+    @Override
     public boolean sendMutualChallenge(MutualChallenge mutualChallenge)
     {
-        mutualChallenge.setChallenger(this);
-        mutualChallenge.setMutualAction(MutualAction.PreventAssassination);
-        return true;
-    }
-    public Action ChooseAction(){
-        // TODO override
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Which action do you want to do:1)Income 2)ForeignAid 3)Coup 4)Taxes 5)Assassinate 6)Steal 7)SwapInfluence");
-        int actionNumber = scanner.nextInt();
-        if (actionNumber == 1) return Action.Income;
-        else if (actionNumber == 2) return Action.ForeignAid;
-        else if (actionNumber == 3) return Action.Coup;
-        else if (actionNumber == 4) return Action.Taxes;
-        else if (actionNumber == 5) return Action.Assassinate;
-        else if (actionNumber == 6) return Action.Steal;
-        else return Action.SwapInfluence;
+        return false;
     }
 
+    @Override
+    public Action ChooseAction(){
+        if (!(this.getCardFromHand().contains("Assassin")) && (this.getCardFromHand().contains("Ambassador"))){
+            return Action.SwapInfluence;
+        }
+        else if (!(this.getCardFromHand().contains("Ambassador")) && this.coin > 0){
+            //ToDo
+        }
+        else if (this.coin == 0) return Action.ForeignAid;
+        return Action.Income;
+    }
 
 }
