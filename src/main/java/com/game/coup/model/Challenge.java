@@ -34,6 +34,10 @@ public class Challenge {
     }
 
     public ChallengeStatus ActionEvent(){
+        if (action == Action.ChanceToChange){
+            changeCardOfHand(challenged);
+            return ChallengeStatus.NoChallenge;
+        }
         if (challenger == null){
             return ChallengeStatus.NoChallenge;
         }
@@ -47,9 +51,6 @@ public class Challenge {
             return ChallengeStatus.NoChallenge;
         }
         else if (action == Action.Income){
-            return ChallengeStatus.NoChallenge;
-        }
-        else if (action == Action.ChanceToChange){
             return ChallengeStatus.NoChallenge;
         }
         else if (action == Action.Steal){
@@ -108,7 +109,15 @@ public class Challenge {
         }
     }
 
+    public void changeCardOfHand(Player challenged){
+        if(challenged.coin > 0) {
+            String tmp = challenged.chooseCard();
+            game.addToDesk(tmp);
+            challenged.removeFromHand(tmp);
+            challenged.addCardToHand(game.removeFromDesk());
+        }
 
+    }
     public ChallengeStatus getCardName(String card){
         if (challenged.hand.contains(card)) {
             game.addToDesk(card);

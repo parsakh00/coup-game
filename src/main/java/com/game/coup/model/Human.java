@@ -9,10 +9,14 @@ import java.util.Scanner;
 public class Human extends Player{
     Action action;
 
+    int index;
+
+    int whichBot;
+
     String challenge;
 
-    public Human(String name) {
-        super(name,"");
+    public Human(String name, String botNumber) {
+        super(name,botNumber);
     }
 
     public void setAction(Action action) {
@@ -55,21 +59,38 @@ public class Human extends Player{
 
         return false;
     }
+    @Override
     public Player choosePlayer(Game game){
-        //TODO override
-        // It should choose a player from the game.
-        return null;
+        if (getWhichBot() == 5) return null;
+        else return game.player[getWhichBot()];
     }
+
+    public void setWhichBot(int whichBot) {
+        this.whichBot = whichBot;
+    }
+
+    public int getWhichBot() {
+        return whichBot;
+    }
+
+    @Override
     public String chooseCard(){
-        //ToDo override
         // choose a card to give away
-        return null;
+        return hand.get(getIndex());
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public Action getAction() {
         return action;
     }
-
+    @Override
     public Action ChooseAction(){
         return getAction();
     }

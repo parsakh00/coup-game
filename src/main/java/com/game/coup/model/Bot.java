@@ -7,9 +7,11 @@ public class Bot extends Player{
         super(name, botNumber);
 
     }
+    @Override
     public Player choosePlayer(Game game){
         return game.player[(game.turn + 1)%4];
     }
+    @Override
     public String chooseCard(){
         return hand.get(0);
     }

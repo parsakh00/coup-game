@@ -73,18 +73,29 @@ public class GameSceneController {
 
     private final String[] CHALLENGE_LIST = {"No Challenge","FirstBot","SecondBot","ThirdBot"};
     private final ObservableList<String> CHALLENGE = FXCollections.observableArrayList(CHALLENGE_LIST);
+    private final String[] HAND_LIST = {"Card 1", "Card 2"};
+    private final ObservableList<String> HAND = FXCollections.observableArrayList(HAND_LIST);
+
+
+    public Label endOfGame;
+    public ChoiceBox<String> whichCard;
+    public Button changeBtn;
+    public GridPane LostCards;
     int eachCardNumber;
     Image Ambassador1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Ambassador.png")));
     Image Assassin1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Assassin.png")));
     Image Captain1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Captain.png")));
     Image Duke1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Duke.png")));
     Image Countess1 = new Image(String.valueOf(HelloApplication.class.getResource("images/Contessa.png")));
+    Image BackOfCards = new Image(String.valueOf(HelloApplication.class.getResource("images/BackOfCard.jpg")));
+
     Game game;
     int round = 1;
     Action currentAction;
+    int cardIndex;
     Player adversary;
     int position = 0;
-    Player player1 = new Player("Parsa","user");
+    Player player1 = new Human("Parsa","user");
     Player player2 = new Paranoid("Paranoid","FirstBot");
     Player player3 = new CautiousKiller("CautiousKiller","SecondBot");
     Player player4 = new Greedy("Greedy","ThirdBot");
@@ -98,8 +109,6 @@ public class GameSceneController {
     public void initialize() throws InterruptedException {
         game = new Game(player1, player2, player3, player4);
 
-//
-//        progression("1");
 //        progression("2");
         arrangeDesk();
         arrangeHands();
@@ -109,6 +118,7 @@ public class GameSceneController {
 
         actionChoiceBox.setItems(ACTION);
         challengeChoiceBox.setItems(CHALLENGE);
+        whichCard.setItems(HAND);
 
         nextTurn();
 
@@ -128,7 +138,15 @@ public class GameSceneController {
         }
         return null;
     }
+    public void changeBtn(ActionEvent actionEvent){
+        if (Objects.equals(whichCard.getSelectionModel().getSelectedItem(), "Card 1")) ((Human)game.player[game.turn]).setIndex(0);
+        else ((Human)game.player[game.turn]).setIndex(1);
+    }
     public void challengeBtn(ActionEvent actionEvent){
+        if (Objects.equals(challengeChoiceBox.getSelectionModel().getSelectedItem(), "FirstBot")) ((Human)game.player[game.turn]).setWhichBot(1);
+        else if (Objects.equals(challengeChoiceBox.getSelectionModel().getSelectedItem(), "SecondBot")) ((Human)game.player[game.turn]).setWhichBot(2);
+        else if (Objects.equals(challengeChoiceBox.getSelectionModel().getSelectedItem(), "ThirdBot")) ((Human)game.player[game.turn]).setWhichBot(3);
+        else if (Objects.equals(challengeChoiceBox.getSelectionModel().getSelectedItem(), "No Challenge")) ((Human)game.player[game.turn]).setWhichBot(5);
         String currentChallenge = challengeChoiceBox.getSelectionModel().getSelectedItem();
         getUserPlayer().setChallenge(currentChallenge);
         Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
@@ -149,6 +167,7 @@ public class GameSceneController {
     }
     public void actionBtn(ActionEvent actionEvent){
         currentAction = actionChoiceBox.getSelectionModel().getSelectedItem();
+        progression("choose " + currentAction + " by " + game.player[game.turn].getName());
         if (currentAction != null) Challenges();
     }
 
@@ -158,7 +177,7 @@ public class GameSceneController {
         round += 1;
         roundNo.setText(String.valueOf(round - 3));
     }
-    public void nextTurn() throws InterruptedException {
+    public void nextTurn(){
         if (!game.isGameFinished()){
             //game.player[game.turn].MakeAction(game);
             if (game.player[game.turn].isHuman){
@@ -166,19 +185,25 @@ public class GameSceneController {
             }
             else{
                 currentAction = (game.player[game.turn]).ChooseAction();
+                progression("choose " + currentAction + " by " + game.player[game.turn].getName());
                 Challenges();
                 game.turn = (game.turn + 1) % 4;
                 nextTurn();
                 round += 1;
             }
         }
+        else{
+            endOfGame.setText("Game Ended");
+        }
     }
+
     public void Challenges(){
+        Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
         if (game.player[game.turn].isHuman){
-            Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
+            if (challengeChoiceBox.getSelectionModel().getSelectedItem() != null) progression("send challenge by " + game.player[game.turn].getName());
             game.setChallenges(challenge);
             ChallengeStatus challengeStatus = challenge.ActionEvent();
-
+            updateHand(game.turn);
             // if challenge fails then the player's turn is over
             if (challengeStatus == ChallengeStatus.ChallengeLost){
                 // if number of cards is zero, then give all the coins to treasury
@@ -190,13 +215,27 @@ public class GameSceneController {
                 return;
             }
             TakeAction();
-
+            Player adversary=  game.player[game.turn].choosePlayerForAction(currentAction,game);
+            MutualChallenge mutualChallenge = new MutualChallenge(game.player[game.turn],currentAction,adversary);
+            game.setMutualChallenges(mutualChallenge);
+            if (mutualChallenge.isMutuallyChallenged()) {
+                // get challenges to the mutual action
+                Challenge challengeMutual = new Challenge(mutualChallenge.mutualAction ,mutualChallenge.action, mutualChallenge.challenger, game);
+                game.setChallenges(challengeMutual);
+                ChallengeStatus challengeMutualStatus = challengeMutual.ActionEvent();
+                // if the mutual challenge wins or is not challenged, then player loses
+                if (challengeMutualStatus != ChallengeStatus.ChallengeLost)
+                {
+                    return;
+                }
+            }
+            game.player[game.turn].doAction(currentAction,game,adversary);
         }
         else{
-            Challenge challenge = new Challenge(currentAction, game.player[game.turn], game);
+            if (currentAction != Action.ChanceToChange && currentAction != Action.Income) progression("send challenge by " + game.player[game.turn].getName());
             game.setChallenges(challenge);
             ChallengeStatus challengeStatus = challenge.ActionEvent();
-
+            updateHand(game.turn);
             // if challenge fails then the player's turn is over
             if (challengeStatus == ChallengeStatus.ChallengeLost){
                 // if number of cards is zero, then give all the coins to treasury
@@ -208,7 +247,21 @@ public class GameSceneController {
                 return;
             }
             TakeAction();
-            //return;
+            Player adversary=  game.player[game.turn].choosePlayerForAction(currentAction,game);
+            MutualChallenge mutualChallenge = new MutualChallenge(game.player[game.turn],currentAction,adversary);
+            game.setMutualChallenges(mutualChallenge);
+            if (mutualChallenge.isMutuallyChallenged()) {
+                // get challenges to the mutual action
+                Challenge challengeMutual = new Challenge(mutualChallenge.mutualAction ,mutualChallenge.action, mutualChallenge.challenger, game);
+                game.setChallenges(challengeMutual);
+                ChallengeStatus challengeMutualStatus = challengeMutual.ActionEvent();
+                // if the mutual challenge wins or is not challenged, then player loses
+                if (challengeMutualStatus != ChallengeStatus.ChallengeLost)
+                {
+                    return;
+                }
+            }
+            game.player[game.turn].doAction(currentAction,game,adversary);
         }
     }
     public void TakeAction(){
@@ -229,6 +282,7 @@ public class GameSceneController {
             userCoins.setText(String.valueOf(game.player[game.turn].getCoin()));
             gameCoin.setText(String.valueOf(game.coin));
         }
+
     }
     public void MutualChallenge(){
         if (game.player[game.turn].isHuman){
@@ -280,14 +334,17 @@ public class GameSceneController {
                 switch (botNumber) {
                     case "FirstBot" -> {
                         pane.getChildren().add(getImageOfCard(handCardName));
+                        pane.getChildren().add(getImageOfCard("BackOfCards"));
                         FirstBotGrid.add(pane, i, 0, 1, 1);
                     }
                     case "SecondBot" -> {
                         pane.getChildren().add(getImageOfCard(handCardName));
+                        pane.getChildren().add(getImageOfCard("BackOfCards"));
                         SecondBotGrid.add(pane, i, 0, 1, 1);
                     }
                     case "ThirdBot" -> {
                         pane.getChildren().add(getImageOfCard(handCardName));
+                        pane.getChildren().add(getImageOfCard("BackOfCards"));
                         ThirdBotGrid.add(pane, i, 0, 1, 1);
                     }
                     default -> {
@@ -297,6 +354,39 @@ public class GameSceneController {
                 }
             }
         }
+    }
+    public void updateHand(int j){
+        //for each player hand
+        for (int i = 0; i < 2; i++) {
+            Pane pane = new Pane();
+            pane.setId(String.valueOf(i));
+            pane.getStyleClass().removeAll();
+            //String userName = getUserNameFromFile(game.player[j]);
+            String botNumber = getUserBotNumberFile(game.player[j]);
+            String handCardName = game.player[j].getCardFromHand().get(i);
+            switch (botNumber) {
+                case "FirstBot" -> {
+                    pane.getChildren().add(getImageOfCard(handCardName));
+                    pane.getChildren().add(getImageOfCard("BackOfCards"));
+                    FirstBotGrid.add(pane, i, 0, 1, 1);
+                }
+                case "SecondBot" -> {
+                    pane.getChildren().add(getImageOfCard(handCardName));
+                    pane.getChildren().add(getImageOfCard("BackOfCards"));
+                    SecondBotGrid.add(pane, i, 0, 1, 1);
+                }
+                case "ThirdBot" -> {
+                    pane.getChildren().add(getImageOfCard(handCardName));
+                    pane.getChildren().add(getImageOfCard("BackOfCards"));
+                    ThirdBotGrid.add(pane, i, 0, 1, 1);
+                }
+                default -> {
+                    pane.getChildren().add(getImageOfCard(handCardName));
+                    HumanCard.add(pane, i, 0, 1, 1);
+                }
+            }
+        }
+
     }
     public int numberOfEachCardInDesk(ArrayList<String> desk, String cardName){
         eachCardNumber = 0;
@@ -310,22 +400,48 @@ public class GameSceneController {
                 Pane pane = new Pane();
                 pane.setId(String.valueOf(i));
                 pane.getStyleClass().removeAll();
-                if (position < 6) {
+                if (position < game.desk.size()) {
                     String cardName = game.desk.get(position);
                     if (Objects.equals(cardName, "Ambassador")) pane.getChildren().add(getImageOfCard("Ambassador"));
                     else if (Objects.equals(cardName, "Assassin")) pane.getChildren().add(getImageOfCard("Assassin"));
                     else if (Objects.equals(cardName, "Countess")) pane.getChildren().add(getImageOfCard("Countess"));
                     else if (Objects.equals(cardName, "Captain")) pane.getChildren().add(getImageOfCard("Captain"));
                     else if (Objects.equals(cardName, "Duke")) pane.getChildren().add(getImageOfCard("Duke"));
+                    pane.getChildren().add(getImageOfCard("BackOfCards"));
                     position += 1;
                     DeskCards.add(pane, 0, i, 1, 1);
                 }
 
         }
     }
+    public void arrangeLostCards(){
+        for (int i = 0; i < 11; i++) {
+            Pane pane = new Pane();
+            pane.setId(String.valueOf(i));
+            pane.getStyleClass().removeAll();
+            if (position < (game.player[game.turn].lostCards.size())) {
+                String cardName = game.desk.get(position);
+                if (Objects.equals(cardName, "Ambassador")) pane.getChildren().add(getImageOfCard("Ambassador"));
+                else if (Objects.equals(cardName, "Assassin")) pane.getChildren().add(getImageOfCard("Assassin"));
+                else if (Objects.equals(cardName, "Countess")) pane.getChildren().add(getImageOfCard("Countess"));
+                else if (Objects.equals(cardName, "Captain")) pane.getChildren().add(getImageOfCard("Captain"));
+                else if (Objects.equals(cardName, "Duke")) pane.getChildren().add(getImageOfCard("Duke"));
+                pane.getChildren().add(getImageOfCard("BackOfCards"));
+                position += 1;
+                LostCards.add(pane, 0, i, 1, 1);
+            }
+
+        }
+    }
     public ImageView getImageOfCard(String cardName){
         if (Objects.equals(cardName, "Duke")){
             ImageView imageView = new ImageView(Duke1);
+            imageView.setFitHeight(191);
+            imageView.setFitWidth(102);
+            return imageView;
+        }
+        else if (Objects.equals(cardName, "BackOfCards")){
+            ImageView imageView = new ImageView(BackOfCards);
             imageView.setFitHeight(191);
             imageView.setFitWidth(102);
             return imageView;

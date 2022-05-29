@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class Player {
 
     protected ArrayList<String> hand;
-    protected ArrayList<String> lostCards;
+    public ArrayList<String> lostCards;
     protected String name;
     public int coin;
 
@@ -152,9 +152,11 @@ public class Player {
 
     public  void takeMoneyForAction(Action currentAction, Game game) {
         if (currentAction == Action.Assassinate){
-            game.addCoins(3);
-            playerCoinUpdate(this, -3);
-            this.coin -= 3;
+            if (this.coin > 2) {
+                game.addCoins(3);
+                playerCoinUpdate(this, -3);
+                this.coin -= 3;
+            }
         }
         else if (currentAction == Action.Income){
             game.addCoins(-1);
@@ -162,9 +164,11 @@ public class Player {
             this.coin += 1;
         }
         else if (currentAction == Action.ChanceToChange){
-            game.addCoins(1);
-            playerCoinUpdate(this, -1);
-            this.coin -= 1;
+            if (this.coin > 0) {
+                game.addCoins(-1);
+                playerCoinUpdate(this, -1);
+                this.coin -= 1;
+            }
         }
         else if (currentAction == Action.Taxes){
             game.addCoins(-3);
@@ -181,9 +185,11 @@ public class Player {
 //            this.coin += 2;
 //        }
         else if (currentAction == Action.Coup){
-            game.addCoins(7);
-            playerCoinUpdate(this, -7);
-            this.coin -= 7;
+            if (this.coin > 6) {
+                game.addCoins(7);
+                playerCoinUpdate(this, -7);
+                this.coin -= 7;
+            }
         }
     }
 

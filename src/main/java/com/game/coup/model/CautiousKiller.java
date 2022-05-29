@@ -29,8 +29,8 @@ public class CautiousKiller extends Bot{
         if (!(this.getCardFromHand().contains("Assassin")) && (this.getCardFromHand().contains("Ambassador"))){
             return Action.SwapInfluence;
         }
-        else if (!(this.getCardFromHand().contains("Ambassador")) && this.coin > 0){
-            //ToDo
+        else if (!(this.getCardFromHand().contains("Assassin")) && !(this.getCardFromHand().contains("Ambassador")) && this.coin == 1){
+            return Action.ChanceToChange;
         }
         else if (this.coin == 0) return Action.ForeignAid;
         return Action.Income;
